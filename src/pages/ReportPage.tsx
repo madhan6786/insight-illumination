@@ -9,8 +9,8 @@ const ReportPage = () => {
     <Layout>
       <div className="max-w-7xl mx-auto px-6 py-16">
         <SectionHeading
-          title="Final Verification Report"
-          subtitle="Your comprehensive verification report with insights and recommendations."
+          title="Interactive Verification Report"
+          subtitle="Your comprehensive verification report with insights and recommendations. Explore it in detail."
           chip="Final Step"
         />
         
