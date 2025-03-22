@@ -34,7 +34,7 @@ const SkillsChart = ({ skills }: SkillsChartProps) => {
           <XAxis dataKey="name" />
           <YAxis allowDecimals={false} domain={[0, 100]} />
           <Tooltip content={<ChartTooltipContent />} />
-          <Bar dataKey="value" name="Skill Level" nameKey="name" radius={[4, 4, 0, 0]}>
+          <Bar dataKey="value" name="Skill Level" radius={[4, 4, 0, 0]}>
             {skills.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
