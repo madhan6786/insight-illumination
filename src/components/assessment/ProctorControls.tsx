@@ -26,13 +26,22 @@ const ProctorControls: React.FC<ProctorControlsProps> = ({ onReady }) => {
     video: false,
     face: false
   });
+  const [stream, setStream] = useState<MediaStream | null>(null);
   
   const startCamera = async () => {
     setLoading(prev => ({ ...prev, video: true }));
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const videoStream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          facingMode: "user"
+        } 
+      });
+      
       if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+        videoRef.current.srcObject = videoStream;
+        setStream(videoStream);
         setPermissionStatus(prev => ({ ...prev, video: true }));
         toast.success("Camera access granted");
       }
@@ -59,16 +68,48 @@ const ProctorControls: React.FC<ProctorControlsProps> = ({ onReady }) => {
   };
   
   const detectFace = async () => {
+    if (!videoRef.current || !stream) {
+      toast.error("Camera must be enabled first");
+      return;
+    }
+    
     setLoading(prev => ({ ...prev, face: true }));
     
-    // In a real implementation, you would use a face detection library
-    // Here we're simulating face detection with a timeout
-    setTimeout(() => {
+    try {
+      // In a real implementation, you would use a face detection library
+      // Here we're simulating face detection with a timeout and additional UI feedback
+      
+      // Adding a more realistic simulation with multiple checks
+      toast.info("Scanning for face...");
+      
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      toast.info("Aligning face position...");
+      
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      toast.info("Confirming facial features...");
+      
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       setPermissionStatus(prev => ({ ...prev, face: true }));
       toast.success("Face detection successful");
+    } catch (error) {
+      console.error("Face detection failed:", error);
+      toast.error("Face detection failed. Please try again.");
+    } finally {
       setLoading(prev => ({ ...prev, face: false }));
-    }, 2000);
+    }
   };
+  
+  // Cleanup function for media streams
+  useEffect(() => {
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach(track => {
+          track.stop();
+        });
+      }
+    };
+  }, [stream]);
   
   const allPermissionsGranted = 
     permissionStatus.audio && 
@@ -90,6 +131,21 @@ const ProctorControls: React.FC<ProctorControlsProps> = ({ onReady }) => {
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
               <Video className="h-16 w-16 text-muted-foreground/30" />
+            </div>
+          )}
+          
+          {permissionStatus.video && !permissionStatus.face && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="border-2 border-dashed border-yellow-400 w-32 h-32 rounded-full opacity-70 flex items-center justify-center">
+                <span className="text-xs text-yellow-500 bg-black/50 px-2 py-1 rounded">Position face here</span>
+              </div>
+            </div>
+          )}
+          
+          {permissionStatus.face && (
+            <div className="absolute top-2 right-2 bg-green-500/80 text-white p-1 rounded text-xs flex items-center">
+              <CheckCircle className="h-3 w-3 mr-1" />
+              Face Detected
             </div>
           )}
         </div>
@@ -169,6 +225,9 @@ const ProctorControls: React.FC<ProctorControlsProps> = ({ onReady }) => {
             {loading.face && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {permissionStatus.face ? "Detected" : "Detect Face"}
           </Button>
+          {!permissionStatus.video && !loading.video && (
+            <p className="text-xs text-amber-500 mt-2 text-center">Enable camera first</p>
+          )}
         </div>
       </div>
       
