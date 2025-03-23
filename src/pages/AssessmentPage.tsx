@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
@@ -9,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { CheckCircle, ArrowRight } from 'lucide-react';
 
 const AssessmentPage = () => {
   const [proctorReady, setProctorReady] = useState(false);
