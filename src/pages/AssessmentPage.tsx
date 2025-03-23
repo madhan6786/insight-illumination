@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { CheckCircle, ArrowRight } from 'lucide-react';
+import '../styles/assessment.css';
 
 const AssessmentPage = () => {
   const [proctorReady, setProctorReady] = useState(false);
@@ -56,6 +57,7 @@ const AssessmentPage = () => {
                       defaultValue="chat" 
                       className="w-full"
                       onValueChange={setActiveTab}
+                      value={activeTab}
                     >
                       <TabsList className="grid w-full grid-cols-2 mb-8">
                         <TabsTrigger value="chat">Technical Questions</TabsTrigger>
